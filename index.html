@@ -3,7 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weird.Mom</title>
+    <title>Weird.Mom - Embrace the Weirdness</title>
+
+    <!-- Meta Description -->
+    <meta name="description" content="Weird.Mom is a fun and quirky site celebrating the uniqueness of moms everywhere. Embrace the weirdness with us!">
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/weird_favicon.png" type="image/png">
+
+    <!-- Open Graph Meta Tags (for social sharing) -->
+    <meta property="og:title" content="Weird.Mom - Embrace the Weirdness">
+    <meta property="og:description" content="Weird.Mom is a fun and quirky site celebrating the uniqueness of moms everywhere. Embrace the weirdness with us!">
+    <meta property="og:image" content="assets/Weirdmom.png">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Weird.Mom - Embrace the Weirdness">
+    <meta name="twitter:description" content="Weird.Mom is a fun and quirky site celebrating the uniqueness of moms everywhere. Embrace the weirdness with us!">
+    <meta name="twitter:image" content="assets/Weirdmom.png">
+    <meta name="twitter:url" content="https://yourwebsite.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -180,6 +200,21 @@
         a:hover {
             text-decoration: underline;
         }
+        #user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--text-dark-purple);
+        }
+        #view-counter {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #user-details {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +226,13 @@
         </label>
     </header>
     <main id="main-content">
+        <div id="user-info">
+            <div id="view-counter">Active Viwers: <span id="active-users">1</span></div>
+            <div id="user-details">
+                <span id="user-timezone"></span>
+                <span id="user-language"></span>
+            </div>
+        </div>
         <div id="image-container">
             <img id="weird-mom-image" src="" alt="Weird Mom">
         </div>
@@ -203,12 +245,12 @@
         <button onclick="closePopup()">OK</button>
     </div>
     <div id="browser-info"></div>
+    
     <footer>
         Design Inspired by <a href="https://www.berkshirehathaway.com/" target="_blank">Berkshire Hathaway</a>. 
-        Built by <a href="https://x.com/helloIamWilly" target="_blank">Will G</a><br><br>
-        I'm not tracking you. There's no cookies.
+        Built by <a href="https://x.com/helloIamWilly" target="_blank">Will G</a>.<br><br>
+        I'm not tracking you. There are no cookies.
     </footer>
-
     <script>
         const weirdMoms = [
             {
@@ -218,6 +260,14 @@
             {
                 image: 'https://media.discordapp.net/attachments/1276599124208123944/1277098514186244106/work_good_photorealistic_image_of_a_super_weird_mom_looking_con_fb70a5b1-74aa-4b56-b0d0-1309511b79ae.png?ex=66cbee2d&is=66ca9cad&hm=bc05c2d0e9dd159d346428dbdad500866c404524e3e5360d3a26736b0dd05ac5&=&format=webp&quality=lossless&width=1046&height=1046',
                 quote: "My kids think I'm weird, but I'm just keeping it real."
+            },
+            {
+                image: 'https://media.discordapp.net/attachments/1276599124208123944/1277142909506031616/work_good_Photrealistic_image_of_a_karen_aka_an_annoying_person_bb1f4598-e458-43c0-b4fc-49690f931937.png?ex=66cc1785&is=66cac605&hm=34e5685b27e68f1a82f9729df17f5407e73ed1f1fae2278a8d0e21f62350ef25&=&format=webp&quality=lossless&width=700&height=700',
+                quote: "It's pronounced Kareen!!!!!!!"
+            },
+            {
+                image: 'https://media.discordapp.net/attachments/1276599124208123944/1277143750660984873/work_good_photo_of_a_woman_looking_absolutely_disgusted_8cf10a3b-6b5d-4923-99a6-fce3fb232234.png?ex=66cc184e&is=66cac6ce&hm=2dfd1ac83a3c75b54b312e67b72710c042bf23aa009d59dff6e49f27870f868e&=&format=webp&quality=lossless&width=700&height=700',
+                quote: "I can't believe you shop at Grocery Outlet! I hate Bargain Markets!!!!"
             },
             {
                 image: 'https://media.discordapp.net/attachments/1276599124208123944/1277116611756822568/work_good_Photorealistic_image_of_a_mom_who_looks_very_human_bu_3053a066-8a7a-48ed-b9a8-3691d1a96ba6.png?ex=66cbff07&is=66caad87&hm=f87347bbc7b6275bfbb92ddcd635d8db0edcf4914aa47c8742f924e2618b2793&=&format=webp&quality=lossless&width=700&height=700',
@@ -308,6 +358,73 @@
             Platform: ${platform}<br><br>
             User Agent: ${userAgent}
         `;
+
+        // View counter
+        const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        const broadcastChannel = new BroadcastChannel('user_activity');
+
+        function updateViewCounter() {
+            const now = Date.now();
+            localStorage.setItem(userId, now);
+
+            // Broadcast that this user is active
+            broadcastChannel.postMessage({ type: 'userActive', timestamp: now });
+
+            // Clean up inactive users
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('user_') && now - localStorage.getItem(key) > 10000) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+            // Count active users
+            const activeUsers = Object.keys(localStorage).filter(key => key.startsWith('user_')).length;
+            document.getElementById('active-users').textContent = activeUsers;
+        }
+
+        // Listen for broadcasts from other tabs
+        broadcastChannel.onmessage = (event) => {
+            if (event.data.type === 'userActive') {
+                updateViewCounter();
+            }
+        };
+
+        // Update view counter every 5 seconds
+        setInterval(updateViewCounter, 5000);
+
+        // Detect user's timezone
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.getElementById('user-timezone').textContent = `Timezone: ${userTimezone}`;
+
+        // Detect user's preferred language
+        const userLanguage = navigator.language || navigator.userLanguage;
+        document.getElementById('user-language').textContent = `Language: ${userLanguage}`;
+
+        // Detect if user has navigated away from the tab
+        let hidden, visibilityChange;
+        if (typeof document.hidden !== "undefined") {
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
+        } else if (typeof document.msHidden !== "undefined") {
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
+        } else if (typeof document.webkitHidden !== "undefined") {
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
+        }
+
+        function handleVisibilityChange() {
+            if (!document[hidden]) {
+                alert("Welcome back! We missed you!");
+            }
+        }
+
+        if (typeof document.addEventListener === "undefined" || hidden === undefined) {
+            console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
+        } else {
+            document.addEventListener(visibilityChange, handleVisibilityChange, false);
+        }
+
+        // Call updateViewCounter immediately to initialize the counter
+        updateViewCounter();
     </script>
-</body>
-</html>
