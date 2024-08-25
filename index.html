@@ -48,7 +48,8 @@
             background-color: var(--neutral-gray);
             color: var(--text-dark-purple);
         }
-        body.dark-mode {
+        body.dark-mode #map,
+        body.dark-mode main  {
             --primary-color: #B24BFF;
             --accent-pink: #FF9BCF;
             --accent-turquoise: #70F0E0;
@@ -109,8 +110,8 @@
             font-size: 20px;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="%23FF69B4" d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/></svg>') 16 16, pointer;
             font-family: 'Times New Roman', Times, serif;
-            background-color: var(--accent-pink);
-            color: var(--white);
+            background-color: var(--primary-color);
+            color: white;
             border: none;
             border-radius: 5px;
             transition: background-color 0.3s;
@@ -142,7 +143,7 @@
         #map {
             width: 300px;
             height: 200px;
-            margin: 20px auto;
+            margin: 40px auto 20px auto;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -189,7 +190,7 @@
         }
         #browser-info {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
             font-size: 0.9em;
             color: var(--text-dark-purple);
             margin-bottom: 20px;
@@ -244,15 +245,12 @@
         <p id="quote"></p>
         <button onclick="nextImage()">Next Weird Mom</button>
         <div id="map"></div>
+        <div id="browser-info"></div>
     </main>
     <div id="popup">
         <p>Don't steal my mom!</p>
         <button onclick="closePopup()">OK</button>
     </div>
-    <br>
-    <br>
-    <div id="browser-info"></div>
-    
     <footer>
         Design Inspired by <a href="https://www.berkshirehathaway.com/" target="_blank">Berkshire Hathaway</a>. 
         Built by <a href="https://x.com/helloIamWilly" target="_blank">Will G</a>.<br><br>
@@ -439,3 +437,6 @@
         // Call updateViewCounter immediately to initialize the counter
         updateViewCounter();
     </script>
+    </body>
+
+    </html>
